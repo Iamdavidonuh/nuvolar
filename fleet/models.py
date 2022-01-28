@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 # Create your models here.
 
@@ -30,3 +33,17 @@ class Flight(models.Model):
 
     def __str__(self) -> str:
         return f"Flight {self.id} From {self.departure_airport} To {self.arrival_airport}"
+
+
+    def clean(self):
+        if self.arrival_date < self.departure_date:
+            raise ValidationError({"arrival_date": _("arrival date can not be in the past")})
+
+        if self.departure_date < timezone.now():
+            raise ValidationError({"departure_date": _("A flight can only be created for a future departure")})
+
+
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)

@@ -1,4 +1,5 @@
 from datetime import timedelta
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.db.utils import IntegrityError
 from fleet.tests import TestBase
@@ -34,9 +35,42 @@ class TestModels(TestBase):
             arrival_airport=arrival,
             arrival_date = timezone.now() + timedelta(1),
             departure_airport = departure,
-            departure_date= timezone.now()
+            departure_date= timezone.now() + timedelta(minutes=40)
         )
         fetched_flight = Flight.objects.get(id=flight.id)
-        self.assertIsNotNone(fetched_flight)    
+        self.assertIsNotNone(fetched_flight)
+
+    def test_create_flight_fails_with_past_departure(self):
+        """ Test to check if the departure datetime is older than the current datetime(timezone.now())"""
+
+        arrival = self._create_airport(icao_code="OMAA")
+        departure = self._create_airport()
+        
+        with self.assertRaises(ValidationError):
+            Flight.objects.create(
+                arrival_airport=arrival,
+                arrival_date = timezone.now() + timedelta(1),
+                departure_airport = departure,
+                departure_date= timezone.now() - timedelta(2)
+            )
+
+    
+    def test_flight_arrival_time_fails_if_older_than_departure_time(self):
+        """ Test checks if the arrival datetime is older than the departure datetime"""
+
+        arrival = self._create_airport(icao_code="OMAA")
+        departure = self._create_airport()
+        
+        with self.assertRaises(ValidationError):
+            Flight.objects.create(
+                arrival_airport=arrival,
+                arrival_date = timezone.now() - timedelta(1),
+                departure_airport = departure,
+                departure_date= timezone.now() + timedelta(minutes=20)
+            )
+
+
+
+
 
 
