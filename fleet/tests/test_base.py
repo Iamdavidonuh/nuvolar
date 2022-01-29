@@ -1,4 +1,5 @@
 from django.test import TestCase
+from rest_framework.test import APIClient
 from django.utils import timezone
 from datetime import timedelta
 from fleet.models import Aircraft, Airport, Flight
@@ -6,6 +7,8 @@ from fleet.models import Aircraft, Airport, Flight
 
 class TestBase(TestCase):
     """ contains helper functions for all test cases """
+
+    api_client = APIClient()
 
     @staticmethod
     def _create_airport(icao_code=None):
@@ -27,4 +30,4 @@ class TestBase(TestCase):
             departure_airport = departure,
             departure_date= timezone.now()
         )
-        
+
