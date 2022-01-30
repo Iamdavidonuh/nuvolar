@@ -20,30 +20,43 @@ class Aircraft(models.Model):
     def __str__(self) -> str:
         return f"{self.serial_number} - {self.manufacturer}"
 
+
 class Flight(models.Model):
-    
-    arrival_airport = models.ForeignKey(Airport, on_delete=models.DO_NOTHING, related_name='arrival')
+
+    departure_airport = models.ForeignKey(
+        Airport, on_delete=models.DO_NOTHING, related_name="departure"
+    )
+    departure_date = models.DateTimeField()
+
+    arrival_airport = models.ForeignKey(
+        Airport, on_delete=models.DO_NOTHING, related_name="arrival"
+    )
     arrival_date = models.DateTimeField()
 
-    departure_airport = models.ForeignKey(Airport, on_delete=models.DO_NOTHING, related_name='departure')
-    departure_date = models.DateTimeField()
-    
-    aircraft = models.ForeignKey(Aircraft, on_delete=models.SET_NULL, null=True, blank=True)
-
+    aircraft = models.ForeignKey(
+        Aircraft, on_delete=models.SET_NULL, null=True, blank=True
+    )
 
     def __str__(self) -> str:
-        return f"Flight {self.id} From {self.departure_airport} To {self.arrival_airport}"
-
+        return (
+            f"Flight {self.id} From {self.departure_airport} To {self.arrival_airport}"
+        )
 
     def clean(self):
         if self.arrival_date < self.departure_date:
-            raise ValidationError({"arrival_date": _("arrival date can not be in the past")})
+            raise ValidationError(
+                {"arrival_date": _("arrival date can not be in the past")}
+            )
 
         if self.departure_date < timezone.now():
-            raise ValidationError({"departure_date": _("A flight can only be created for a future departure")})
+            raise ValidationError(
+                {
+                    "departure_date": _(
+                        "A flight can only be created for a future departure"
+                    )
+                }
+            )
 
-
-    
     def save(self, *args, **kwargs):
         self.full_clean()
         return super().save(*args, **kwargs)
