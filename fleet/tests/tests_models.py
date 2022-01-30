@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, date, time
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.db.utils import IntegrityError
@@ -32,16 +32,18 @@ class TestModels(TestBase):
         arrival = self._create_airport(icao_code="OMAA")
         departure = self._create_airport()
         flight = Flight.objects.create(
-            arrival_airport=arrival,
-            arrival_date = timezone.now() + timedelta(1),
             departure_airport = departure,
-            departure_date= timezone.now() + timedelta(minutes=40)
+            departure_date= date.today(),
+            departure_time = time(6, 30),
+            arrival_airport=arrival,
+            arrival_date = date.today() + timedelta(1),
+            arrival_time = time(8, 30)
         )
         fetched_flight = Flight.objects.get(id=flight.id)
         self.assertIsNotNone(fetched_flight)
 
     def test_create_flight_fails_with_past_departure(self):
-        """ Test to check if the departure datetime is older than the current datetime(timezone.now())"""
+        """ Test to check if the departure datetime is older than the current datetime's date.today()"""
 
         arrival = self._create_airport(icao_code="OMAA")
         departure = self._create_airport()
@@ -49,9 +51,11 @@ class TestModels(TestBase):
         with self.assertRaises(ValidationError):
             Flight.objects.create(
                 arrival_airport=arrival,
-                arrival_date = timezone.now() + timedelta(1),
+                arrival_time = time(2, 30),
+                arrival_date = date.today() + timedelta(1),
                 departure_airport = departure,
-                departure_date= timezone.now() - timedelta(2)
+                departure_date= date.today() - timedelta(2),
+                departure_time = time(6, 30)
             )
 
     
@@ -64,9 +68,11 @@ class TestModels(TestBase):
         with self.assertRaises(ValidationError):
             Flight.objects.create(
                 arrival_airport=arrival,
-                arrival_date = timezone.now() - timedelta(1),
+                arrival_time = time(4, 30),
+                arrival_date = date.today() - timedelta(1),
                 departure_airport = departure,
-                departure_date= timezone.now() + timedelta(minutes=20)
+                departure_date= date.today(),
+                departure_time = time(9, 30)
             )
 
 

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from datetime import date
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -21,13 +22,15 @@ class Aircraft(models.Model):
         return f"{self.serial_number} - {self.manufacturer}"
 
 class Flight(models.Model):
-    
-    arrival_airport = models.ForeignKey(Airport, on_delete=models.DO_NOTHING, related_name='arrival')
-    arrival_date = models.DateTimeField()
 
     departure_airport = models.ForeignKey(Airport, on_delete=models.DO_NOTHING, related_name='departure')
-    departure_date = models.DateTimeField()
-    
+    departure_date = models.DateField()
+    departure_time = models.TimeField()
+
+    arrival_airport = models.ForeignKey(Airport, on_delete=models.DO_NOTHING, related_name='arrival')
+    arrival_date = models.DateField()
+    arrival_time = models.TimeField()
+
     aircraft = models.ForeignKey(Aircraft, on_delete=models.SET_NULL, null=True, blank=True)
 
 
@@ -39,7 +42,7 @@ class Flight(models.Model):
         if self.arrival_date < self.departure_date:
             raise ValidationError({"arrival_date": _("arrival date can not be in the past")})
 
-        if self.departure_date < timezone.now():
+        if self.departure_date < date.today():
             raise ValidationError({"departure_date": _("A flight can only be created for a future departure")})
 
 
