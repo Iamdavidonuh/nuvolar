@@ -32,13 +32,12 @@ class TestModels(TestBase):
         arrival = self._create_airport(icao_code="OMAA")
         departure = self._create_airport()
         flight = Flight.objects.create(
+            
             departure_airport = departure,
-            departure_date= date.today(),
-            departure_time = time(6, 30),
+            departure_date= timezone.now() + timedelta(minutes=40),
             arrival_airport=arrival,
-            arrival_date = date.today() + timedelta(1),
-            arrival_time = time(8, 30)
-        )
+            arrival_date = timezone.now() + timedelta(1),
+            )
         fetched_flight = Flight.objects.get(id=flight.id)
         self.assertIsNotNone(fetched_flight)
 
@@ -50,14 +49,12 @@ class TestModels(TestBase):
         
         with self.assertRaises(ValidationError):
             Flight.objects.create(
-                arrival_airport=arrival,
-                arrival_time = time(2, 30),
-                arrival_date = date.today() + timedelta(1),
                 departure_airport = departure,
-                departure_date= date.today() - timedelta(2),
-                departure_time = time(6, 30)
-            )
+                departure_date= timezone.now() - timedelta(2),
 
+                arrival_airport=arrival,
+                arrival_date = timezone.now() + timedelta(1)
+            )
     
     def test_flight_arrival_time_fails_if_older_than_departure_time(self):
         """ Test checks if the arrival datetime is older than the departure datetime"""
@@ -66,13 +63,13 @@ class TestModels(TestBase):
         departure = self._create_airport()
         
         with self.assertRaises(ValidationError):
+
             Flight.objects.create(
-                arrival_airport=arrival,
-                arrival_time = time(4, 30),
-                arrival_date = date.today() - timedelta(1),
+
                 departure_airport = departure,
-                departure_date= date.today(),
-                departure_time = time(9, 30)
+                departure_date= timezone.now() + timedelta(minutes=20),
+                arrival_airport=arrival,
+                arrival_date = timezone.now() - timedelta(1)
             )
 
 

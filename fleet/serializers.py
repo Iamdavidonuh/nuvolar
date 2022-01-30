@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from datetime import date
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from fleet.models import Aircraft, Airport, Flight
 
@@ -25,10 +25,10 @@ class FlightSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
 
-        if data['departure_date'] < date.today():
+        if data['departure_date'] < timezone.now():
             raise serializers.ValidationError({"departure_date": _("A flight can only be created for a future departure")})
 
-        if data['arrival_date'] < data['departure_date'] or data['arrival_date'] < date.today():
+        if data['arrival_date'] < data['departure_date'] or data['arrival_date'] < timezone.now():
             raise serializers.ValidationError({"arrival_date": _("arrival date can not be in the past")})
 
         return data

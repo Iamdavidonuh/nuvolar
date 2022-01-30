@@ -33,4 +33,4 @@ class FlightViewset(viewsets.ModelViewSet):
 
         if not start or not end:
             return queryset
-        return queryset.filter(departure_time__range=[start, end])
+        return queryset.filter(departure_date__time__range=[start, end])
