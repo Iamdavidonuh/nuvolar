@@ -54,7 +54,7 @@ class ReportViewset(viewsets.ReadOnlyModelViewSet):
 
     def list(self, *args, **kwargs):
         aircraft_data = {}
-        queryset = self.get_queryset().order_by("id")
+        queryset = self.get_queryset()
         for flight in queryset:
             inflight_time = (
                 flight.arrival_date - flight.departure_date

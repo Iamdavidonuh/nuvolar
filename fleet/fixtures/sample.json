@@ -1,0 +1,61 @@
+[
+{
+  "model": "fleet.airport",
+  "pk": 1,
+  "fields": {
+    "icao_code": "OMAA"
+  }
+},
+{
+  "model": "fleet.airport",
+  "pk": 2,
+  "fields": {
+    "icao_code": "GCXO"
+  }
+},
+{
+  "model": "fleet.airport",
+  "pk": 3,
+  "fields": {
+    "icao_code": "OMNK"
+  }
+},
+{
+  "model": "fleet.aircraft",
+  "pk": 1,
+  "fields": {
+    "serial_number": "123ABC89",
+    "manufacturer": "Boeing"
+  }
+},
+{
+  "model": "fleet.aircraft",
+  "pk": 2,
+  "fields": {
+    "serial_number": "404AE365",
+    "manufacturer": "Fly Emirates"
+  }
+},
+{
+  "model": "fleet.flight",
+  "pk": 1,
+  "fields": {
+    "departure_airport": 1,
+    "departure_date": "2022-01-30T15:30:00Z",
+    "arrival_airport": 2,
+    "arrival_date": "2022-01-30T22:40:00Z",
+    "aircraft": 1
+  }
+},
+{
+  "model": "fleet.flight",
+  "pk": 2,
+  "fields": {
+    "departure_airport": 1,
+    "departure_date": "2022-02-01T11:22:00Z",
+    "arrival_airport": 2,
+    "arrival_date": "2022-02-02T04:22:00Z",
+    "aircraft": 1
+  }
+}
+]
