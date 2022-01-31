@@ -51,7 +51,7 @@ Nuvolar Python developer take home test
 
 You can navigate the application using:
 
-- ### Django Rest APi root
+- ### Django Rest API root
 
     on your browser, go to ``127.0.0.1:8000``
 
@@ -63,7 +63,7 @@ You can navigate the application using:
 ## Endpoints
 
 
-- # Aircrafts
+- ### Aircrafts
 
      - Create an aircraft
 
@@ -150,7 +150,7 @@ You can navigate the application using:
             {}
         ```
 
-- # Airport
+- ### Airport
 
     ``127.0.0.1:8000/airport/``
 
@@ -247,7 +247,7 @@ You can navigate the application using:
 
 
 
-- # Flight
+- ### Flight
 
 
     ``127.0.0.1:8000/flight/``
@@ -395,7 +395,7 @@ You can navigate the application using:
             {}
         ```
 
-- # Reports
+- ### Reports
 
     ```127.0.0.1:8000/reports/```
 
