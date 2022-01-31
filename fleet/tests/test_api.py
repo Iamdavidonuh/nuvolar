@@ -208,3 +208,22 @@ class TestFlightViewsets(TestBase):
         response = self.api_client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
+
+
+class TestReportViewset(TestBase):
+    def setUp(self) -> None:
+        self.flight_one = self._create_flight()
+
+        flight_data = self._sample_flight_payload(
+            arrival_date=timezone.now() + timedelta(days=2),
+            departure_date=timezone.now() + timedelta(days=1),
+        )
+        self.flight_two = Flight.objects.create(**flight_data)
+
+    def test_report_list_view(self):
+        start_time = self.flight_one.departure_date.strftime("%Y-%m-%d %H:%M:%S")
+        end_time = self.flight_two.arrival_date.strftime("%Y-%m-%d %H:%M:%S")
+        url = f"{reverse('reports-list')}?departure_date={start_time}&arrival_date={end_time}"
+        response = self.api_client.get(url, format="json")
+
+        self.assertTrue(len(response.data), 1)
